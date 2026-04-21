@@ -16,4 +16,9 @@ df['HasBackground'] = df['Background'].str.strip().replace('', None).notna().ast
 df = df.drop(columns=['Background'])
 
 
+
+df['HasHeaderImage'] = df['HeaderImage'].str.strip().replace('', None).notna().astype(int)
+df = df.drop(columns=['HeaderImage'])
+
+
 // 
