@@ -62,16 +62,16 @@ def extract_reqs(text):
 
     ram     = re.findall(r'(\d+)\s*(GB|mb)\s*(?:Memory|RAM)', text, re.IGNORECASE)
     storage = re.findall(r'(\d+)\s*GB\s*Hard\s*Drive',   text, re.IGNORECASE)
-    ghz = re.findall(r'(\d+\.?\d*)\s*(GHz|MHz)', text, re.IGNORECASE)
+    ghz = re.findall(r'(\d+\.?\d*)\s*(GHz|mhz)', text, re.IGNORECASE)
     opengl  = re.findall(r'OpenGL\s*(\d+\.?\d*)',         text, re.IGNORECASE)
     cpu=None
     if ghz: 
       value, unit = ghz[0]
       value = float(value)
-
+      
       if unit.lower() == 'mhz':
         value = value / 1000
-        cpu = value
+      cpu = value
     else:
         cpu = None
     
@@ -82,7 +82,7 @@ def extract_reqs(text):
 
       if unit.lower() == 'mb':
         value = value / 1000
-        Ram = value
+      Ram = value
     else:
         Ram = None
 
