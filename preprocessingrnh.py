@@ -14,3 +14,6 @@ df = df.drop(columns=['LegalNotice', 'DRMNotice', 'ExtUserAcctNotice'])
 
 df['HasBackground'] = df['Background'].str.strip().replace('', None).notna().astype(int)
 df = df.drop(columns=['Background'])
+
+
+// 
