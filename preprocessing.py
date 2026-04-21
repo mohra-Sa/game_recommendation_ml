@@ -45,8 +45,6 @@ df['GameAge'] = datetime.now().year - df['ReleaseDate_Year']
 print(df[['ReleaseDate','ReleaseDate_Year','ReleaseDate_Month','ReleaseDate_Day','GameAge']].head())
 
 
-
-
 # fill misssing values in PriceCurrency and encode it
 
 print(df['PriceCurrency'].value_counts(dropna=False)) 
