@@ -10,7 +10,7 @@ df=pd.read_csv("data/train_data.csv")
 
 
 # Fill missing values in text columns with empty strings and create binary features indicating the presence of text
-text_columns = ['MacMinReqsText','LinuxMinReqsText','PCRecReqsText','PCMinReqsText','SupportURL','SupportEmail','Website','Reviews','ExtUserAcctNotice','DRMNotice','LegalNotice']
+text_columns = ['SupportURL','SupportEmail','Website','Reviews','ExtUserAcctNotice','DRMNotice','LegalNotice','Background','HeaderImage']
 for col in text_columns:
     df[col] = df[col].fillna('').str.strip().ne('').astype(int)
 # Convert text columns to numeric features by calculating their length (number of characters)(this more accurately captures the amount of information provided in the text, which may be more relevant for recommendation than just the presence of text)
@@ -122,12 +122,15 @@ for col in extract_cols:
     if pc[pc_col].notna().any():
         pc[pc_col] = pc[pc_col].fillna(pc[pc_col].min())
 
-   
+
+
+    
 
 df = pd.concat([df, linux, mac, pc], axis=1)
 print(df[['Linux_RAM_GB','Linux_Storage_GB','Linux_CPU_GHz','Linux_OpenGL',
            'Mac_RAM_GB','Mac_Storage_GB','Mac_CPU_GHz','Mac_OpenGL',
           'PC_RAM_GB','PC_Storage_GB','PC_CPU_GHz','PC_OpenGL']].iloc[8:21].head())
+
 
 
 
