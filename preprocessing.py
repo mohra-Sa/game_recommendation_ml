@@ -134,7 +134,6 @@ print(df[['Linux_RAM_GB','Linux_Storage_GB','Linux_CPU_GHz','Linux_OpenGL',
 
 
 
-
 def corr_heatmap(df, columns):
     plt.figure(figsize=(10, 8))
     sns.heatmap(df[columns].corr(), annot=True, cmap='coolwarm', linewidths=0.5)
