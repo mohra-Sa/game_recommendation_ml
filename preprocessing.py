@@ -136,8 +136,8 @@ print(df[['Linux_RAM_GB','Linux_Storage_GB','Linux_CPU_GHz','Linux_OpenGL',
 
 def corr_heatmap(df, columns):
     plt.figure(figsize=(10, 10))
-    sns.heatmap(df[columns].corr(), annot=True, cmap='coolwarm', linewidths=0.5)
-    plt.title('Correlation Heatmap', fontsize=10, fontweight='bold')
+    sns.heatmap(df[columns].corr(), annot=True, cmap='coolwarm', linewidths=0.5, annot_kws={"size": 8})
+    plt.title('Correlation Heatmap', fontsize=10, fontweight='bold', pad=8)
     plt.xticks(rotation=40, ha='right', fontsize=7)
     plt.yticks(rotation=0, fontsize=7)
     plt.tight_layout()
@@ -179,8 +179,12 @@ choice = [0, 2]
 df['AchievementHighlightedCount'] = np.select(condition, choice, default=1)
 
 #new features
-df['relative_variation_owners']=df['SteamSpyOwnersVariance']/df['SteamSpyOwners']
-
+#df['relative_variation_owners']=df['SteamSpyOwnersVariance']/df['SteamSpyOwners']
+df['relative_variation_owners'] = np.where(
+    df['SteamSpyOwners'] > 0, 
+    df['SteamSpyOwnersVariance'] / df['SteamSpyOwners'], 
+    0
+)
 df.drop(['SteamSpyOwnersVariance','SteamSpyOwners','SteamSpyPlayersEstimate','SteamSpyPlayersVariance'],axis=1,inplace=True)
 clean_colms=['RecommendationCount','Metacritic','AchievementHighlightedCount','relative_variation_owners']
 #correlation heatmap after handling the variance columns
