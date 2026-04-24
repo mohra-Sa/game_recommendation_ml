@@ -135,11 +135,11 @@ print(df[['Linux_RAM_GB','Linux_Storage_GB','Linux_CPU_GHz','Linux_OpenGL',
 
 
 def corr_heatmap(df, columns):
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 10))
     sns.heatmap(df[columns].corr(), annot=True, cmap='coolwarm', linewidths=0.5)
-    plt.title('Correlation Heatmap', fontsize=16, fontweight='bold')
+    plt.title('Correlation Heatmap', fontsize=8, fontweight='bold')
     plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.yticks(rotation=0, fontsize=10)
+    plt.yticks(rotation=0, fontsize=8)
     plt.show()
 
 
@@ -149,33 +149,42 @@ for c in col:
     print(f'{c} has {df[c].isnull().sum()} missing values\n{df[c].dtype} data type\n {df[c].describe()} \n\n')
 
 # Plot histograms for each column
-fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(15,15))
+fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(12, 20))
 axes = axes.flatten()
 for i, c in enumerate(col):
-    sns.histplot(df[c].dropna(), kde=True, ax=axes[i], color='#2b6777', edgecolor='white')
-    axes[i].set_title(f'Distribution of {c}', fontsize=8, fontweight='bold')
-    axes[i].set_xlabel(c, fontsize=5)
-    axes[i].set_ylabel('Frequency', fontsize=5)
-    axes[i].tick_params(labelsize=5)
+    sns.histplot(df[c].dropna(), kde=True,ax=axes[i], bins=100, shrink=0.8, color='#2b6777', edgecolor='white')
+    upper_limit = df[c].quantile(0.99)
+    axes[i].set_xlim(0, upper_limit)
+    axes[i].set_title(f'Distribution of {c}', fontsize=9, fontweight='bold')
+    axes[i].set_xlabel(c, fontsize=7)
+    axes[i].set_ylabel('Frequency', fontsize=7)
 for j in range(i + 1, len(axes)):
     axes[j].set_visible(False)
-plt.tight_layout(pad=3.0) 
+plt.tight_layout(pad=10.0) 
 plt.show()
 
 #correlation heatmap before handling the variance columns
 corr_heatmap(df, col)
 
 #handling sekwness
-for c in col:
+for c in col[:-1]:
     df[c]=np.log1p(df[c])
+
+# handling most two  frequent values 0 and 10 to 0 and 2 , less frequent values(1-9)to 1
+condition = [df['AchievementHighlightedCount'] == 0,
+             df['AchievementHighlightedCount'] == 10]
+choice = [0, 2]
+df['AchievementHighlightedCount'] = np.select(condition, choice, default=1)
 
 #new features
 df['relative_variation_owners']=df['SteamSpyOwnersVariance']/df['SteamSpyOwners']
 
 df.drop(['SteamSpyOwnersVariance','SteamSpyOwners','SteamSpyPlayersEstimate','SteamSpyPlayersVariance'],axis=1,inplace=True)
-colms=['Metacritic','RecommendationCount','AchievementHighlightedCount','relative_variation_owners']
+clean_colms=['Metacritic','RecommendationCount','SteamSpyOwners','SteamSpyOwnersVariance',
+             'SteamSpyPlayersEstimate','SteamSpyPlayersVariance','AchievementHighlightedCount',
+             'relative_variation_owners']
 #correlation heatmap after handling the variance columns
-corr_heatmap(df, colms)
+corr_heatmap(df, clean_colms)
 
 
 
