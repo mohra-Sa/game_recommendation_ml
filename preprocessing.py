@@ -3,6 +3,8 @@ import numpy as np
 import pycountry
 from datetime import datetime
 import re
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 df=pd.read_csv("data/train_data.csv")
 
@@ -120,13 +122,59 @@ for col in extract_cols:
     if pc[pc_col].notna().any():
         pc[pc_col] = pc[pc_col].fillna(pc[pc_col].min())
 
-
-
-    
+   
 
 df = pd.concat([df, linux, mac, pc], axis=1)
 print(df[['Linux_RAM_GB','Linux_Storage_GB','Linux_CPU_GHz','Linux_OpenGL',
            'Mac_RAM_GB','Mac_Storage_GB','Mac_CPU_GHz','Mac_OpenGL',
           'PC_RAM_GB','PC_Storage_GB','PC_CPU_GHz','PC_OpenGL']].iloc[8:21].head())
+
+
+
+
+def corr_heatmap(df, columns):
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df[columns].corr(), annot=True, cmap='coolwarm', linewidths=0.5)
+    plt.title('Correlation Heatmap', fontsize=16, fontweight='bold')
+    plt.xticks(rotation=45, ha='right', fontsize=10)
+    plt.yticks(rotation=0, fontsize=10)
+    plt.show()
+
+
+col=['Metacritic','RecommendationCount','SteamSpyOwners','SteamSpyOwnersVariance',
+     'SteamSpyPlayersEstimate','SteamSpyPlayersVariance','AchievementHighlightedCount']
+for c in col:
+    print(f'{c} has {df[c].isnull().sum()} missing values\n{df[c].dtype} data type\n {df[c].describe()} \n\n')
+
+# Plot histograms for each column
+fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(15,15))
+axes = axes.flatten()
+for i, c in enumerate(col):
+    sns.histplot(df[c].dropna(), kde=True, ax=axes[i], color='#2b6777', edgecolor='white')
+    axes[i].set_title(f'Distribution of {c}', fontsize=8, fontweight='bold')
+    axes[i].set_xlabel(c, fontsize=5)
+    axes[i].set_ylabel('Frequency', fontsize=5)
+    axes[i].tick_params(labelsize=5)
+for j in range(i + 1, len(axes)):
+    axes[j].set_visible(False)
+plt.tight_layout(pad=3.0) 
+plt.show()
+
+#correlation heatmap before handling the variance columns
+corr_heatmap(df, col)
+
+#handling sekwness
+for c in col:
+    df[c]=np.log1p(df[c])
+
+#new features
+df['relative_variation_owners']=df['SteamSpyOwnersVariance']/df['SteamSpyOwners']
+
+df.drop(['SteamSpyOwnersVariance','SteamSpyOwners','SteamSpyPlayersEstimate','SteamSpyPlayersVariance'],axis=1,inplace=True)
+colms=['Metacritic','RecommendationCount','AchievementHighlightedCount','relative_variation_owners']
+#correlation heatmap after handling the variance columns
+corr_heatmap(df, colms)
+
+
 
 
