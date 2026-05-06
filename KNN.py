@@ -17,7 +17,7 @@ with open('label_map_cls.pkl', 'wb') as f:
 print('Saved label_map_cls.pkl')
 
 
-K_FEATURES = 20   # keep top-20 features
+K_FEATURES = 20   # keep top 20 features
 
 selector = SelectKBest(score_func=f_classif, k=K_FEATURES)
 selector.fit(X_train, y_train)
