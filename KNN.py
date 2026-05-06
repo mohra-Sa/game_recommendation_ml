@@ -66,7 +66,7 @@ k_df = pd.DataFrame(k_results)
 
 # visualizing
 plt.figure(figsize=(7, 4))
-plt.plot(k_df['k'], k_df['accuracy'], marker='o', color='steelblue', linewidth=2)
+plt.plot(k_df['k'], k_df['accuracy'], marker='o', color='blue', linewidth=2)
 plt.xticks(k_values)
 plt.xlabel('n_neighbors (k)')
 plt.ylabel('Test Accuracy')
@@ -99,7 +99,7 @@ for w, label in zip(weight_options, weight_labels):
 w_df = pd.DataFrame(w_results)
 
 plt.figure(figsize=(6, 4))
-plt.bar(w_df['weights'], w_df['accuracy'], color=['steelblue', 'darkorange', 'green'])
+plt.bar(w_df['weights'], w_df['accuracy'], color=['blue', 'pink', 'green'])
 plt.xlabel('Weights')
 plt.ylabel('Test Accuracy')
 plt.title(f'KNN – Effect of weights (k={int(best_k)})')
